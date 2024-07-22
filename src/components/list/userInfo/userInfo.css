@@ -1,0 +1,32 @@
+.userInfo {
+  padding: 20px;
+  display: flex;
+  /* flex se lam ngang */
+  align-items: center;
+  /* can chinh items nam  */
+  justify-content: space-between;
+  /* viet css cho class user  */
+  .user {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
+  /* viet css cho phan icons UserInfo  */
+  .icons {
+    display: flex;
+    gap: 20px;
+    img {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+  }
+}

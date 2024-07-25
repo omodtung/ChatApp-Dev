@@ -3,21 +3,20 @@ import "./Chat.css";
 import EmojiPicker from "emoji-picker-react";
 
 const Chat = () => {
-    const  [open,setOpen] = useState(false);
-    const [text,setText] = useState("");
-const handleEmoji=(e)=>
-{
-    setText((prev)=> prev + e.emoji);
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
+  console.log(text);
+  const handleEmoji = (e) => {
+    setText((prev) => prev + e.emoji);
     setOpen(false);
-
-}
+  };
   return (
+    // Structure Ui Follow Class Top
+    // chat ( Top -> Bottom)
 
-    
     <div className="chat">
       <div className="top">
-
-      {/* user  */}
+        {/* user  */}
         <div className="user">
           <img src={"./avatar.png"} alt="" />
           {/* <span>{user?.username}</span> */}
@@ -35,18 +34,21 @@ const handleEmoji=(e)=>
           <img src="./video.png" alt="" />
           <img src="./info.png" alt="" />
         </div>
+        {/* Icon */}
       </div>
 
       <div className="center"></div>
+      {/* bottom of user  */}
       <div className="bottom">
         <div className="icons">
-          <img src="./phone.png" alt="" />
-          <img src="./video.png" alt="" />
-          <img src="./info.png" alt="" />
+          <img src="./img.png" alt="" />
+          <img src="./camera.png" alt="" />
+          <img src="./mic.png" alt="" />
         </div>
 
         <input
           type="text"
+          value={text}
           placeholder="Type a message"
           onChange={(e) => setText(e.target.value)}
         ></input>
@@ -62,8 +64,8 @@ const handleEmoji=(e)=>
         </div>
         <button
           className="sendButton"
-        //   onClick={handleSend}
-        //   disabled={isCurrentUserBlocked || isReceiverBlocked}
+          //   onClick={handleSend}
+          //   disabled={isCurrentUserBlocked || isReceiverBlocked}
         >
           Send
         </button>

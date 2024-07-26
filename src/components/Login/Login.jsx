@@ -1,6 +1,7 @@
 import { useState } from "react";
 import io from "socket.io-client";
 import "./Login.css";
+import ChatWidget from "../ChatWidGet/ChatWidget";
 const socket = io.connect("http://localhost:3001/chat");
 const Login = () => {
   const [name, setName] = useState("");
@@ -51,7 +52,7 @@ const Login = () => {
         </div>
       </div>
     ) : (
-      {/* <ChatWidget socket={socket} username={name} room={room} /> */}
+      <ChatWidget socket={socket} username={name} room={room} />
     )}
   </div>;
 };

@@ -19,9 +19,7 @@ const Chat = () => {
         {/* user  */}
         <div className="user">
           <img src={"./avatar.png"} alt="" />
-          {/* <span>{user?.username}</span> */}
-
-          {/*  Texts */}
+          
           <div className="texts">
             <span> Jane Done </span>
             <p>Lorem ipsum dolor, sit amet.</p>
@@ -37,7 +35,44 @@ const Chat = () => {
         {/* Icon */}
       </div>
 
-      <div className="center"></div>
+      <div className="center">
+        <div className="message">
+          <img src="./avatar.png"/>
+          <div className="texts">
+            <p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industry's standard dummy text
+              ever since the 1500s, when an unknown printer took a galley of
+              type and scrambled it to make a type specimen book. It has
+            </p>
+            <span>1 Min Ago</span>
+          </div>
+        </div>
+        <div className="message">
+          <img src="./avatar.png"/>
+          <div className="texts">
+            <p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industry's standard dummy text
+              ever since the 1500s, when an unknown printer took a galley of
+              type and scrambled it to make a type specimen book. It has
+            </p>
+            <span>1 Min Ago</span>
+          </div>
+        </div>
+        <div className="message own">
+          <img src="./avatar.png"/>
+          <div className="texts">
+            <p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industry's standard dummy text
+              ever since the 1500s, when an unknown printer took a galley of
+              type and scrambled it to make a type specimen book. It has
+            </p>
+            <span>1 Min Ago</span>
+          </div>
+        </div>
+      </div> 
       {/* bottom of user  */}
       <div className="bottom">
         <div className="icons">
@@ -74,4 +109,3 @@ const Chat = () => {
   );
 };
 export default Chat;
-    

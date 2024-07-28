@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./ChatList.css";
+import AddUser from "./addUser/addUser";
 
 const ChatList = () => {
   const [addMode, setAddMode] = useState(false);
@@ -67,6 +68,10 @@ const ChatList = () => {
           <p>Hello</p>
         </div>
       </div>
+  {  addMode && <AddUser></AddUser>}
+  {/* his line uses a conditional rendering technique in React.
+It checks the value of addMode. If addMode is true, it will render the <AddUser></AddUser> component.
+If addMode is false, nothing is rendered. */}
     </div>
   );
 };

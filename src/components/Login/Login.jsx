@@ -1,59 +1,91 @@
 import { useState } from "react";
 import io from "socket.io-client";
 import "./Login.css";
-import ChatWidget from "../ChatWidGet/ChatWidget";
-const socket = io.connect("http://localhost:3001/chat");
+import { toast } from "react-toastify";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth,db } from "../../lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
 const Login = () => {
-  const [name, setName] = useState("");
-  const [room, setRoom] = useState("");
-  const [showChat, setShowChat] = useState(false);
+  const [avatar, setAvatar] = useState({
+    file: null,
+    url: "",
+  });
 
-
-  const joinRoom = () => {
-    if (name !== "" && room !== "") {
-      socket.emit("joinRoom", room);
-      setShowChat(true);
+  const handleAvatar = (e) => {
+    if (e.target.file[0]) {
+      setAvatar({
+        file: e.target.file[0],
+        url: URL.createObjectURL(e.target.file[0]),
+      });
     }
   };
 
-  return <div className="flex justify-center align-middle min-w-screen min-h-screen bg-slate-50 h-1">
-    {!showChat ? (
-      <div className="flex h-96 lg:w-1/4 sm:w-2/4 mx-auto my-auto bg-white rounded-xl shadow-lg  py-12 px-4 sm:px-6 lg:px-8">
-        <div className="w-full">
-          <h1 className="text-xl font-medium text-black text-center">
-            Join A Chat
-          </h1>
-          <div className="flex flex-col ">
-            <label className="text-xl mt-3">Name</label>
-            <input
-              type="text"
-              placeholder="Enter your name"
-              onChange={(event) => {
-                setName(event.target.value);
-              }}
-              className="p-2 mt-3 border border-indigo-600"
-            />
-            <label className="text-xl mt-3">Room ID</label>
-            <input
-              type="text"
-              placeholder="Room ID..."
-              onChange={(event) => {
-                setRoom(event.target.value);
-              }}
-              className="p-2 mt-3 border border-indigo-600"
-            />
-            <button
-              className="mt-3 block bg-indigo-600 text-xl font-bold  text-white p-2"
-              onClick={joinRoom}
-            >
-              Join
-            </button>
-          </div>
-        </div>
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    const { username, email, password } = Object.fromEntries(formData);
+
+    try {
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      // const img Url
+      await setDoc(doc(db, "users", res.user.uid), {
+        username,
+        email,
+        id: res.user.uid,
+        
+        blocked: [],
+      });
+      console.log("test -1");
+      await setDoc(doc(db, "userchats", res.user.uid), {
+        chats: [],
+      });
+      console.log("test - 2");
+      toast.success(" Account created! You can login now!");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
+    }
+  };
+  const handleLogin = (e) => {
+    e.preventDefault();
+    toast.success("Hello");
+  };
+  return (
+    <div className="login">
+      <div className="item">
+        <h2>Welcome back,</h2>
+        <form onSubmit={handleLogin}>
+          <input type="text" placeholder="Email" name="email" />
+          <input type="password" placeholder="Password" name="password" />
+          <button>Sign In</button>
+        </form>
       </div>
-    ) : (
-      <ChatWidget socket={socket} username={name} room={room} />
-    )}
-  </div>;
+      <div className="separator"></div>
+      <div className="item">
+        <h2>Create an Account</h2>
+        <form onSubmit={handleRegister}>
+          <label htmlFor="file">
+            <img src={avatar.url || "./avatar.png"} alt="" />
+            Upload an image
+          </label>
+          <input
+            type="file"
+            id="file"
+            style={{ display: "none" }}
+            onChange={handleAvatar}
+          />
+          <input type="text" placeholder="Username" name="username" />
+          <input type="text" placeholder="Email" name="email" />
+          <input type="password" placeholder="Password" name="password" />
+          <button>Sign Up</button>
+        </form>
+      </div>
+    </div>
+  );
 };
 export default Login;

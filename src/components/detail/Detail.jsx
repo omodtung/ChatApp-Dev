@@ -1,6 +1,10 @@
 import "./Detail.css";
-
+import { auth, db } from "../../lib/firebase";
 const Detail = () => {
+  const handleLogout = () => {
+    auth.signOut();
+    resetChat()
+  };
   return (
     <div className="detail">
       <div className="user">
@@ -87,14 +91,10 @@ const Detail = () => {
             <img src="./arrowUp.png" alt="" />
           </div>
         </div>
-        {/* <button onClick={handleBlock}>
-          {isCurrentUserBlocked
-            ? "You are Blocked!"
-            : isReceiverBlocked
-            ? "User blocked"
-            : "Block User"}
-        </button> */}
-        <button className="logout" >
+        <button >
+        You are Blocked!
+        </button>
+        <button className="logout" onClick={handleLogout}>
           Logout
         </button>
       </div>

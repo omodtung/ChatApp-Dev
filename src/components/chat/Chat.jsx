@@ -1,11 +1,39 @@
-import { useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import "./Chat.css";
 import EmojiPicker from "emoji-picker-react";
+import {
+  arrayUnion,
+  doc,
+  getDoc,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "../../lib/firebase";
+import { useChatStore } from "../../lib/chatStore";
+import { useUserStore } from "../../lib/userStore";
+import upload from "../../lib/upload";
 
 const Chat = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
+  const endRef = useRef(null);
+  const [chat, setChat] = useState();
   console.log(text);
+  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
+  useChatStore();
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chat.messages]);
+  useEffect(() => {
+    const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
+      setChat(res.data());
+    });
+
+    return () => {
+      unSub();
+    };
+  }, [chatId]);
+  console.log(chat);
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
     setOpen(false);
@@ -19,7 +47,7 @@ const Chat = () => {
         {/* user  */}
         <div className="user">
           <img src={"./avatar.png"} alt="" />
-          
+
           <div className="texts">
             <span> Jane Done </span>
             <p>Lorem ipsum dolor, sit amet.</p>
@@ -37,7 +65,7 @@ const Chat = () => {
 
       <div className="center">
         <div className="message">
-          <img src="./avatar.png"/>
+          <img src="./avatar.png" />
           <div className="texts">
             <p>
               Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -49,7 +77,7 @@ const Chat = () => {
           </div>
         </div>
         <div className="message">
-          <img src="./avatar.png"/>
+          <img src="./avatar.png" />
           <div className="texts">
             <p>
               Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -62,7 +90,7 @@ const Chat = () => {
         </div>
 
         <div className="message">
-          <img src="./avatar.png"/>
+          <img src="./avatar.png" />
           <div className="texts">
             <p>
               Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -74,7 +102,7 @@ const Chat = () => {
           </div>
         </div>
         <div className="message">
-          <img src="./avatar.png"/>
+          <img src="./avatar.png" />
           <div className="texts">
             <p>
               Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -86,7 +114,7 @@ const Chat = () => {
           </div>
         </div>
         <div className="message">
-          <img src="./avatar.png"/>
+          <img src="./avatar.png" />
           <div className="texts">
             <p>
               Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -98,7 +126,7 @@ const Chat = () => {
           </div>
         </div>
         <div className="message own">
-          <img src="./avatar.png"/>
+          <img src="./avatar.png" />
           <div className="texts">
             <p>
               Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -109,7 +137,7 @@ const Chat = () => {
             <span>1 Min Ago</span>
           </div>
         </div>
-      </div> 
+      </div>
       {/* bottom of user  */}
       <div className="bottom">
         <div className="icons">

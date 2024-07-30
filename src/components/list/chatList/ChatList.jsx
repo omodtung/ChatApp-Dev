@@ -1,15 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./ChatList.css";
 import AddUser from "./addUser/addUser";
-
+import { useUserStore } from "../../../lib/userStore";
+import { onSnapshot } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../../lib/firebase";
 const ChatList = () => {
-  const [addMode, setAddMode] = useState(false);
-//   const [chats, setChats] = useState([]);
-// const {currentUser} = useUserStore ();
-//   const filteredChats = chats.filter((c) =>
-//     c.user.username.toLowerCase().includes(input.toLowerCase())
-//   );
+  const [chats, setChats] = useState([]);
 
+  const [addMode, setAddMode] = useState(false);
+  const { currentUser } = useUserStore();
+  // const [currentUser] = useUserStore();
+  //   const [chats, setChats] = useState([]);
+  // const {currentUser} = useUserStore ();
+  //   const filteredChats = chats.filter((c) =>
+  //     c.user.username.toLowerCase().includes(input.toLowerCase())
+  //   );
+
+  useEffect(() => {
+    const unSub = onSnapshot(
+      doc(db, "userchats", currentUser.id),
+      async (res) => {
+        const items = res.data().chats;
+
+        const promises = items.map(async (item) => {
+          const userDocRef = doc(db, "users", item.receiverId);
+          const userDocSnap = await getDoc(userDocRef);
+
+          const user = userDocSnap.data();
+
+          return { ...item, user };
+        });
+
+        const chatData = await Promise.all(promises);
+
+        setChats(chatData.sort((a, b) => b.updatedAt - a.updatedAt));
+      }
+    );
+
+    return () => {
+      unSub();
+    };
+  }, []);
   const handleSelect = async (chat) => {};
   return (
     <div className="chatList">
@@ -24,52 +56,17 @@ const ChatList = () => {
           onClick={() => setAddMode((prev) => !prev)}
         ></img>
       </div>
-      {/* {filteredChats.map((chat) => (
-        <div
-          className="item"
-          // in chat has chatId
-          key={chat.chatId}
-          onClick={() => handleSelect(chat)}
-          // make sense this code line
-          style={{ backgroundColor: chat?.isSeen ? "transparent" : "#5183fe" ,}}
-        > */}
-
-{/* <img
- src={
-  chat.user.blocked.includes (currentUser.id)
-  ?"./ava"
- }
->
-
-</img>
-
+      {chats.map((chat) => (
+        <div className="item" key={chat.chatId}>
+          <img src={chat.user.avatar ||'./avatar.png'}></img>
+          <div className="texts">
+            <span> {chat.user.username}</span>
+            <p> {chat.lastMessage}</p>
+          </div>
         </div>
-      ))} */}
-      <div className="item">
-        <img src="./avatar.png"></img>
-        <div className="texts">
-          <span> jane Doe</span>
-          <p>Hello</p>
-        </div>
-      </div>
-
-      <div className="item">
-        <img src="./avatar.png"></img>
-        <div className="texts">
-          <span> jane Doe</span>
-          <p>Hello</p>
-        </div>
-      </div>
-
-      <div className="item">
-        <img src="./avatar.png"></img>
-        <div className="texts">
-          <span> jane Doe</span>
-          <p>Hello</p>
-        </div>
-      </div>
-  {  addMode && <AddUser></AddUser>}
-  {/* his line uses a conditional rendering technique in React.
+      ))}
+      {addMode && <AddUser></AddUser>}
+      {/* his line uses a conditional rendering technique in React.
 It checks the value of addMode. If addMode is true, it will render the <AddUser></AddUser> component.
 If addMode is false, nothing is rendered. */}
     </div>
